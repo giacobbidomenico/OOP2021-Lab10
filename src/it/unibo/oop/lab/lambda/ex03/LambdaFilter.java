@@ -6,7 +6,9 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
 import java.awt.Toolkit;
+import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -33,28 +35,74 @@ import javax.swing.JTextArea;
 public final class LambdaFilter extends JFrame {
 
     private static final long serialVersionUID = 1760990730218643730L;
-
+    /**
+     * Enumeration that implements the filters.
+     */
     private enum Command {
-        IDENTITY("No modifications", Function.identity());
+        IDENTITY("No modifications", Function.identity()),
+        TO_LOWER_CASE("To lower case", string -> string.toLowerCase()),
+        NUMBER_OF_CHARS("Count the number of chars", counts -> Integer.toString(counts.length())),
+        NUMBER_OF_LINES("Count the number of lines", counts -> Integer.toString(counts.split("\r\n|\r|\n").length)),
+        SORTED_WORDS("List all the words in alphabetical order", Command::alphabeticOrder),
+        COUNT_WORDS("Write the count for each word", Command::countWords);
 
         private final String commandName;
         private final Function<String, String> fun;
-
+        /**
+         * Builds a new {@link Command}.
+         * 
+         * @param name
+         * @param process
+         */
         Command(final String name, final Function<String, String> process) {
             commandName = name;
             fun = process;
         }
-
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public String toString() {
             return commandName;
         }
-
+        /**
+         * Method that applies filters.
+         * 
+         * @param s
+         * @return a string to which filters have been applied
+         */
         public String translate(final String s) {
             return fun.apply(s);
         }
+        /**
+         * Method that sort (in alphabetical order) the words present in a string.
+         * 
+         * @param string
+         * @return a string with the words sorted alphabetically 
+         */
+        private static String alphabeticOrder(final String string) {
+            return List.of(string.split("\\s+")).stream()
+                    .sorted()
+                    .collect(Collectors.joining("\n"));
+        }
+        /**
+         * Method that counts how many times the words are present in a string.
+         * 
+         * @param string
+         * @return a string in which each word is associated with the number of times it appears 
+         *         in the string passed as a parameter
+         */
+        private static String countWords(final String string) {
+            return List.of(string.split("\\s+")).stream()
+                    .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
+                    .entrySet().stream()
+                    .map(tmp -> tmp.getKey() + " -> " + tmp.getValue())
+                    .collect(Collectors.joining("\n"));
+        }
     }
-
+    /**
+     * Builds a new {@link LambdaFilter}.
+     */
     private LambdaFilter() {
         super("Lambda filter GUI");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -82,7 +130,6 @@ public final class LambdaFilter extends JFrame {
         setSize(sw / 4, sh / 4);
         setLocationByPlatform(true);
     }
-
     /**
      * @param a unused
      */
