@@ -25,7 +25,9 @@ import java.util.stream.IntStream;
  *
  */
 public final class LambdaUtilities {
-
+    /**
+     * Builds a new {@link LambdaUtilities}.
+     */
     private LambdaUtilities() {
     }
 
