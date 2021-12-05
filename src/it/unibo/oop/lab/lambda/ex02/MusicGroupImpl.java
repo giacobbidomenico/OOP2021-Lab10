@@ -1,5 +1,7 @@
 package it.unibo.oop.lab.lambda.ex02;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -31,7 +33,7 @@ public final class MusicGroupImpl implements MusicGroup {
 
     @Override
     public Stream<String> orderedSongNames() {
-        return null;
+        return this.songs.stream().map(e -> e.getSongName()).sorted();
     }
 
     @Override
