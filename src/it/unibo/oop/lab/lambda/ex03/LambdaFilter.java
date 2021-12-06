@@ -40,7 +40,7 @@ public final class LambdaFilter extends JFrame {
      */
     private enum Command {
         IDENTITY("No modifications", Function.identity()),
-        TO_LOWER_CASE("To lower case", string -> string.toLowerCase()),
+        TO_LOWER_CASE("To lower case", String :: toLowerCase),
         NUMBER_OF_CHARS("Count the number of chars", counts -> Integer.toString(counts.length())),
         NUMBER_OF_LINES("Count the number of lines", counts -> Integer.toString(counts.split("\r\n|\r|\n").length)),
         SORTED_WORDS("List all the words in alphabetical order", Command::alphabeticOrder),
